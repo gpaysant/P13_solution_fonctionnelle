@@ -1,9 +1,9 @@
-<div>
-    <h3>Chat</h3>
-    <div *ngFor="let chat of chatSessions">
-      <p>{{ chat.heureMessage | date: 'short' }} - {{ chat.message }}</p>
+<div class="chat-container">
+  <div class="messages">
+    <div *ngFor="let message of messages">
+      User{{ message.senderId }} - {{ message.heureMessage | date: 'HH:mm' }} : {{ message.message }} 
     </div>
-    <input [(ngModel)]="newMessage" placeholder="Type your message" />
-    <button (click)="sendMessage()">Send</button>
   </div>
-  
+  <input [(ngModel)]="newMessage" placeholder="Type your message" />
+  <button (click)="sendMessage()">Send</button>
+</div>

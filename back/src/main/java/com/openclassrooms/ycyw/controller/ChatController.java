@@ -6,25 +6,21 @@ import com.openclassrooms.ycyw.model.ServiceClient;
 import com.openclassrooms.ycyw.model.Utilisateur;
 import com.openclassrooms.ycyw.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
-@RestController
-@RequestMapping("/api/chats")
+@Controller
+@CrossOrigin
 public class ChatController {
-
     @Autowired
     private ChatService chatService;
 
-    @GetMapping
-    public List<ChatSession> getAllChats() {
-        return chatService.getAllChats();
-    }
-
-    @PostMapping
-    public ChatSession saveChat(@RequestBody ChatSessionDto chatSessionDto) {
-        System.out.println(chatSessionDto);
+    @MessageMapping("/sendMessage")
+    @SendTo("/topic/messages")
+    public ChatSessionDto sendMessage(ChatSessionDto chatSessionDto) {
         ChatSession chatSession = new ChatSession();
         chatSession.setId(chatSessionDto.getId());
         chatSession.setMessage(chatSessionDto.getMessage());
@@ -35,8 +31,11 @@ public class ChatController {
         serviceClient.setId(chatSessionDto.getServiceClientId());
         chatSession.setServiceClient(serviceClient);
         chatSession.setHeureMessage(chatSessionDto.getHeureMessage());
-        System.out.println(chatSession);
-        return chatService.saveChat(chatSession);
+
+        chatService.saveChat(chatSession);
+
+        return chatSessionDto;
     }
+
 }
 

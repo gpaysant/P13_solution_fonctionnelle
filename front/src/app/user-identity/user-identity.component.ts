@@ -22,6 +22,7 @@ export class UserIdentityComponent implements OnInit {
   loadUsers(): void {
     this.userService.getAllUsers().subscribe(
       (data) => {
+        console.log(data);
         this.users = data;
       },
       (error) => {

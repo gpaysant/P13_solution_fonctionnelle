@@ -8,7 +8,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/user-identity', pathMatch: 'full' },
   { path: 'user-identity', component: UserIdentityComponent },
   { path: 'chat', component: ChatComponent },
-  { path: '**', redirectTo: '/user-identity' } // Route de secours pour les URL non trouvées
+  { path: '**', redirectTo: '/user-identity' }
 ];
 
 @NgModule({

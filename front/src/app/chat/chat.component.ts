@@ -1,45 +1,41 @@
-// src/app/components/chat/chat.component.ts
-import { Component, OnInit } from '@angular/core';
-import { ChatService, ChatSession } from '../chat.service';
+import { Component } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ChatService } from '../chat.service';
+import { ChatSession } from '../models/chat-session.model';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss'],
+  styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit {
-  userId?: number;
-  userType?: string;
-  chatSessions: ChatSession[] = [];
+export class ChatComponent {
+  messages: ChatSession[] = [];
   newMessage: string = '';
+  userId!: number;
 
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    this.userId = Number(sessionStorage.getItem('userId'));
-    this.userType = sessionStorage.getItem('userType') || '';
-    this.loadChats();
-  }
-
-  loadChats() {
-    this.chatService.getAllChats().subscribe((data: ChatSession[]) => {
-      this.chatSessions = data;//.filter(chat => chat.senderId === this.userId);
+    this.chatService.connect((message: ChatSession) => {
+      this.messages.push(message);
     });
+
+    this.chatService.getMessages().subscribe((message: ChatSession)=> {
+      this.messages.push(message);
+    });
+
+    this.userId = parseInt(sessionStorage.getItem('userId') || '0', 10);
   }
 
-  sendMessage() {
-    if (this.newMessage.trim() && this.userId) {
-      const newChatSession: ChatSession = {
-        id: 0, // sera généré par le backend
-        serviceClientId: 1, // remplacez par l'ID du service client actuel
-        senderId: this.userId,
-        message: this.newMessage,
-        heureMessage: new Date(),
-      };
-      this.chatService.saveChat(newChatSession).subscribe((chat) => {
-        this.chatSessions.push(chat);
-        this.newMessage = '';
-      });
-    }
+  sendMessage(): void {
+    const chatMessage: ChatSession = {
+      senderId: this.userId,
+      message: this.newMessage,
+      heureMessage: new Date(),
+      id: null,
+      serviceClientId: 1
+    };
+    this.chatService.sendMessage(chatMessage);
+    this.newMessage = '';
   }
 }
