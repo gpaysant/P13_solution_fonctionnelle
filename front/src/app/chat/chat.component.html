@@ -1,0 +1,9 @@
+<div>
+    <h3>Chat</h3>
+    <div *ngFor="let chat of chatSessions">
+      <p>{{ chat.heureMessage | date: 'short' }} - {{ chat.message }}</p>
+    </div>
+    <input [(ngModel)]="newMessage" placeholder="Type your message" />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+  

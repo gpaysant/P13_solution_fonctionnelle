@@ -1,0 +1,14 @@
+<div>
+    <h3>Choisissez votre identité</h3>
+    <div *ngFor="let user of users">
+      <input
+        type="radio"
+        [value]="user.id"
+        name="userSelection"
+        (click)="onUserSelect(user.id, user.type)"
+      />
+      {{ user.nom }} {{ user.prenom }} ({{ user.type }})
+    </div>
+    <button [disabled]="!selectedUserId" (click)="startChat()">Commencer Chat</button>
+  </div>
+  
